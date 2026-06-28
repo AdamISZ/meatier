@@ -22,30 +22,32 @@ python3 -m venv venv
 source venv/bin/activate 
 ```
 
+Do `python runme.py --help` for the command line arguments. You can change the secret key, the plaintext (the hidden message), and the initial prompt.
+
 ## Models
 
 Look at the top of `runme.py`, there are 3 (smallish, mediumish, slightly bigger) hardcoded models by default. They get downloaded from huggingface first time and then are cached. Bear in mind you might get rate limited. Try the smallest first.
 
 ## Recommended Models
 
-- `EleutherAI/pythia-160m` (default; tiny, fast on CPU)
-- `HuggingFaceTB/SmolLM2-360M` (modern, Apache 2.0)
-- `Qwen/Qwen2.5-0.5B` (modern base LM)
-- `meta-llama/Llama-3.2-1B` (not in the code yet but easily added)
+- `EleutherAI/pythia-160m` (tiny, fast on CPU)
+- `HuggingFaceTB/SmolLM2-360M` (slightly less tiny)
+- `Qwen/Qwen2.5-3B` (small but almost plausible, sometimes. Needs about 12GB RAM I think)
 
 ## Sample output:
 
 ```
-(venv) $ python runme.py 
-Using device: cpu
-Model alias: pythia-160m
-Loading local model from ./models/EleutherAI--pythia-160m
-Loading weights: 100%|████████████████████| 148/148 [00:00<00:00, 10675.47it/s]
+(venv)% python runme.py 
+Using device: mps
+Model alias: qwen-3b
+Loading local model from ./models/Qwen--Qwen2.5-3B
+Loading checkpoint shards: 100%|██████████████████████████████████████████████████████████████████████████████| 3/3 [00:00<00:00, 32.09it/s]
 Plaintext : b'Attack at dawn!'
 Encoding...
-  Encoding: 153/152 bits, 34 tokens generated...
-Stegotext : In 1492 the presence of the Egyptian alphabet was shown to have had implication with their philosophy of the aphthous tree, the result was also shown by including the title of the original
-
+  Encoding: 152/152 bits, 82 tokens generated...
+Stegotext : In 1492, when Christopher Columbus landed on the New World, he thought he had reached India. But Indian people had already lived in the Americas for thousands of years with little contact with the outside world. They knew about the land and waters, unlike Columbus who was ignorant about this particular region.
+While Columbus' expedition of 1492-1493 can be considered America's "first landing," that is
+  Decoded 82 bits so far...
 Recovered : b'Attack at dawn!'
 Success: round-trip verified.
 ```
