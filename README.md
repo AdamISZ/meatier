@@ -1,5 +1,3 @@
-# Meteor: Symmetric-key Steganography
-
 Toy implementation of meteor [1] that you can just run directly on one laptop to show the mechanism, no more.
 
 ## some things:
@@ -12,58 +10,44 @@ Toy implementation of meteor [1] that you can just run directly on one laptop to
 
 ## Setup
 
+Just run `./setup.sh` . it'll install dependencies, do the venv etc. you know the drill.
+
+## Running
+
+Activate the venv (that's `source venv/bin/activate` from the root of the project), then do `python runme.py`.
 ### 1. Create Virtual Environment
 
 ```bash
 python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate 
 ```
 
-### 2. Install Dependencies
+## Models
 
-```bash
-pip install -r requirements.txt
-```
-
-Or with development dependencies:
-
-```bash
-pip install -e ".[dev]"
-```
-
-## Usage
-
-```python
-from meatier import Meteor
-
-# Initialize with model
-meteor = Meteor()
-
-# Encode secret
-encoded = meteor.encode(secret_tokens)
-
-# Decode secret
-decoded = meteor.decode(encoded_tokens)
-```
+Look at the top of `runme.py`, there are 3 (smallish, mediumish, slightly bigger) hardcoded models by default. They get downloaded from huggingface first time and then are cached. Bear in mind you might get rate limited. Try the smallest first.
 
 ## Recommended Models
 
 - `EleutherAI/pythia-160m` (default; tiny, fast on CPU)
 - `HuggingFaceTB/SmolLM2-360M` (modern, Apache 2.0)
 - `Qwen/Qwen2.5-0.5B` (modern base LM)
-- `meta-llama/Llama-3.2-1B`
+- `meta-llama/Llama-3.2-1B` (not in the code yet but easily added)
 
-## Development
+## Sample output:
 
-Run tests:
-```bash
-pytest tests/
 ```
+(venv) $ python runme.py 
+Using device: cpu
+Model alias: pythia-160m
+Loading local model from ./models/EleutherAI--pythia-160m
+Loading weights: 100%|████████████████████| 148/148 [00:00<00:00, 10675.47it/s]
+Plaintext : b'Attack at dawn!'
+Encoding...
+  Encoding: 153/152 bits, 34 tokens generated...
+Stegotext : In 1492 the presence of the Egyptian alphabet was shown to have had implication with their philosophy of the aphthous tree, the result was also shown by including the title of the original
 
-Format code:
-```bash
-black src/ tests/
-isort src/ tests/
+Recovered : b'Attack at dawn!'
+Success: round-trip verified.
 ```
 
 [1] Paper: Meteor - Symmetric-key provably-secure steganography using generative models https://eprint.iacr.org/2021/686
