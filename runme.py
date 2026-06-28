@@ -281,6 +281,12 @@ if __name__ == "__main__":
         default="Attack at dawn!",
         help="Secret message to hide (default: %(default)s)",
     )
+    parser.add_argument(
+        "--context",
+        default="In 1492",
+        help="Priming prompt; must match on encode and decode. Carries no "
+        "payload, but shapes the cover text (default: %(default)s)",
+    )
     cli_args = parser.parse_args()
 
     DEVICE = (
@@ -305,13 +311,13 @@ if __name__ == "__main__":
     print(f"Plaintext : {plaintext}")
     print("Encoding...")
 
-    stego_ids = codec.encode_tokens(plaintext)
+    stego_ids = codec.encode_tokens(plaintext, context=cli_args.context)
 
     # Decode IDs to human-readable text
     stego_text = tokenizer.decode(stego_ids, skip_special_tokens=True)
     print(f"Stegotext : {stego_text}")
 
-    recovered = codec.decode_tokens(stego_ids)
+    recovered = codec.decode_tokens(stego_ids, context=cli_args.context)
     print(f"Recovered : {recovered}")
 
     assert recovered == plaintext, "Decode mismatch!"
