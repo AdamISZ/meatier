@@ -276,6 +276,11 @@ if __name__ == "__main__":
         default="correct-horse-battery-staple",
         help="Secret key shared by sender and receiver (default: %(default)s)",
     )
+    parser.add_argument(
+        "--plaintext",
+        default="Attack at dawn!",
+        help="Secret message to hide (default: %(default)s)",
+    )
     cli_args = parser.parse_args()
 
     DEVICE = (
@@ -296,7 +301,7 @@ if __name__ == "__main__":
         device=DEVICE,
     )
 
-    plaintext = b"Attack at dawn!"
+    plaintext = cli_args.plaintext.encode("utf-8")
     print(f"Plaintext : {plaintext}")
     print("Encoding...")
 
