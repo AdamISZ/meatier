@@ -2,6 +2,7 @@
 runme.py  –  Meteor steganography with local model caching + CPU/GPU.
 """
 
+import argparse
 import hashlib
 import math
 import os
@@ -30,9 +31,10 @@ MODEL_CATALOG = {
     "pythia-160m":   "EleutherAI/pythia-160m",
     "smollm2-360m":  "HuggingFaceTB/SmolLM2-360M",
     "qwen-0.5b":     "Qwen/Qwen2.5-0.5B",
+    "qwen-3b":       "Qwen/Qwen2.5-3B",      # ~12 GB RAM in fp32
 }
 
-MODEL_ALIAS = "pythia-160m"
+MODEL_ALIAS = "qwen-3b"
 MODEL_SPEC = MODEL_CATALOG[MODEL_ALIAS]
 
 
@@ -265,6 +267,17 @@ def load_local_or_hub(spec: str, device: str):
 # 5.  __main__
 # ----------------------------------------------------------------------
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Meteor steganography demo. The key seeds the PRG, so "
+        "different keys produce different stegotext for the same plaintext."
+    )
+    parser.add_argument(
+        "--key",
+        default="correct-horse-battery-staple",
+        help="Secret key shared by sender and receiver (default: %(default)s)",
+    )
+    cli_args = parser.parse_args()
+
     DEVICE = (
         "cuda" if torch.cuda.is_available()
         else "mps" if torch.backends.mps.is_available()
@@ -278,7 +291,7 @@ if __name__ == "__main__":
     codec = MeteorCodec(
         model,
         tokenizer,
-        key="correct-horse-battery-staple",
+        key=cli_args.key,
         beta=32,
         device=DEVICE,
     )
